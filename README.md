@@ -7,5 +7,5 @@ Solution based on https://github.com/DEEFRAG/A9.git
 * GUI
 * Take snapshots
 * Save videos to file
-* Detect more Cameras 
+* Detect and manage more Cameras 
 * Real-time broadcast
