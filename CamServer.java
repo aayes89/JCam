@@ -1,4 +1,3 @@
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,7 +16,7 @@ public class CameraServer {
 
             discoverCameras();
 
-            if(cameras.isEmpty()){
+            if (cameras.isEmpty()) {
                 System.out.println("No cameras detected\nExiting the program!");
                 System.exit(0);
             }
@@ -31,11 +30,11 @@ public class CameraServer {
                 clientThread.start();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
-    private static void initiateCamera(String name, String ip , DatagramSocket s) throws IOException {
+    private static void initiateCamera(String name, String ip, DatagramSocket s) throws IOException {
         DatagramSocket socket = s;
         byte[] buffer = new byte[2];
         InetAddress address = InetAddress.getByName(ip);
@@ -54,67 +53,68 @@ public class CameraServer {
         buffer[1] = (byte) 0x76;
         socket.send(new DatagramPacket(buffer, buffer.length, address, port));
 
+        cameras.clear(); // to avoid duplicating data
         Camera camera = new Camera(name, ip, socket);
         cameras.add(camera);
     }
-private static void discoverCameras() {
-    // Scan the network for cameras with the name "rtthread"
-    try {
-        DatagramSocket socket = new DatagramSocket();
-        socket.setBroadcast(true);
-        socket.setSoTimeout(1000);
 
-        byte[] buffer = new byte[1024];
-        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-        InetAddress broadcastAddress = getBroadcastAddress();
+    private static void discoverCameras() {
+        // Scan the network for cameras with the name "rtthread"
+        try {
+            DatagramSocket socket = new DatagramSocket();
+            socket.setBroadcast(true);
+            socket.setSoTimeout(1000);
 
-        String discoveryMessage = "DISCOVER_RTTHREAD_CAMERAS";
-        DatagramPacket discoveryPacket = new DatagramPacket(discoveryMessage.getBytes(), discoveryMessage.length(), broadcastAddress, 8081);
-        socket.send(discoveryPacket);
+            byte[] buffer = new byte[1024];
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+            InetAddress broadcastAddress = getBroadcastAddress();
 
-        while (true) {
-            try {
-                socket.receive(packet);
-                String response = new String(packet.getData(), 0, packet.getLength());
-                if (response.startsWith("rtthread:")) {
-                    String name = response.substring("rtthread:".length());
-                    String ip = packet.getAddress().getHostAddress();
-                    System.out.println("Discovered Camera: " + name + " at IP: " + ip);
-                    initiateCamera(name, ip, socket);
+            String discoveryMessage = "DISCOVER_RTTHREAD_CAMERAS";
+            DatagramPacket discoveryPacket = new DatagramPacket(discoveryMessage.getBytes(), discoveryMessage.length(), broadcastAddress, 8081);
+            socket.send(discoveryPacket);
+
+            while (true) {
+                try {
+                    socket.receive(packet);
+                    String response = new String(packet.getData(), 0, packet.getLength());
+                    if (response.startsWith("rtthread:")) {
+                        String name = response.substring("rtthread:".length());
+                        String ip = packet.getAddress().getHostAddress();
+                        System.out.println("Discovered Camera: " + name + " at IP: " + ip);
+                        initiateCamera(name, ip, socket);
+                    }
+                } catch (SocketTimeoutException e) {
+                    break;  // Timeout reached, stop receiving packets
                 }
-            } catch (SocketTimeoutException e) {
-                break;  // Timeout reached, stop receiving packets
             }
+
+            socket.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
-
-        socket.close();
-    } catch (IOException e) {
-        e.printStackTrace();
     }
-}
 
-private static InetAddress getBroadcastAddress() throws IOException {
-    InetAddress myIp = null;
-            Enumeration<NetworkInterface> ni = NetworkInterface.getNetworkInterfaces();
-            while (ni.hasMoreElements()) {
-                NetworkInterface mni = ni.nextElement();
-                if (mni.isUp()) {
-                    Enumeration<InetAddress> ia = mni.getInetAddresses();
-                    while (ia.hasMoreElements()) {
-                        InetAddress mia = ia.nextElement();
-                        if (mia.isSiteLocalAddress()) {
+    private static InetAddress getBroadcastAddress() throws IOException {
+        InetAddress myIp = null;
+        Enumeration<NetworkInterface> ni = NetworkInterface.getNetworkInterfaces();
+        while (ni.hasMoreElements()) {
+            NetworkInterface mni = ni.nextElement();
+            if (mni.isUp()) {
+                Enumeration<InetAddress> ia = mni.getInetAddresses();
+                while (ia.hasMoreElements()) {
+                    InetAddress mia = ia.nextElement();
+                    if (mia.isSiteLocalAddress()) {
 
-                            myIp = mia;
-                        }
+                        myIp = mia;
                     }
                 }
             }
-    return myIp;
-}
+        }
+        return myIp;
+    }
 
-   
     private static boolean isImageStart(byte[] buffer) {
-        for (int i = 0; i < buffer.length - 1; i++) {
+        for (int i = 0; i < buffer.length - 2; i++) {
             if (buffer[i] == (byte) 0xff && buffer[i + 1] == (byte) 0xd8) {
                 return true;
             }
@@ -123,7 +123,7 @@ private static InetAddress getBroadcastAddress() throws IOException {
     }
 
     private static boolean isImageEnd(byte[] buffer) {
-        for (int i = 0; i < buffer.length - 1; i++) {
+        for (int i = 0; i < buffer.length - 2; i++) {
             if (buffer[i] == (byte) 0xff && buffer[i + 1] == (byte) 0xd9) {
                 return true;
             }
@@ -134,10 +134,10 @@ private static InetAddress getBroadcastAddress() throws IOException {
     private static void sendImage(Socket clientSocket, byte[] frame) throws IOException {
         OutputStream outputStream = clientSocket.getOutputStream();
 
-        outputStream.write(("HTTP/1.1 200 OK\r\n" +
-                "Content-type: image/jpeg\r\n" +
-                "Content-length: " + frame.length + "\r\n" +
-                "\r\n").getBytes());
+        outputStream.write(("HTTP/1.1 200 OK\r\n"
+                + "Content-type: image/jpeg\r\n"
+                + "Content-length: " + frame.length + "\r\n"
+                + "\r\n").getBytes());
         outputStream.write(frame);
         outputStream.write("\r\n--jpgboundary\r\n".getBytes());
         outputStream.flush();
@@ -162,9 +162,9 @@ private static InetAddress getBroadcastAddress() throws IOException {
                     InputStream inputStream = clientSocket.getInputStream();
                     OutputStream outputStream = clientSocket.getOutputStream();
 
-                    outputStream.write(("HTTP/1.1 200 OK\r\n" +
-                            "Content-type: multipart/x-mixed-replace; boundary=--jpgboundary\r\n" +
-                            "\r\n").getBytes());
+                    outputStream.write(("HTTP/1.1 200 OK\r\n"
+                            + "Content-type: multipart/x-mixed-replace; boundary=--jpgboundary\r\n"
+                            + "\r\n").getBytes());
 
                     while (true) {
                         byte[] buffer = new byte[4096];
@@ -190,7 +190,7 @@ private static InetAddress getBroadcastAddress() throws IOException {
                     clientSocket.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         }
 
@@ -205,6 +205,7 @@ private static InetAddress getBroadcastAddress() throws IOException {
     }
 
     static class Camera {
+
         private String name;
         private String ip;
         private DatagramSocket socket;
