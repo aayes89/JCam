@@ -5,7 +5,10 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
-
+/**
+ *
+ * @author Allan Ayes
+ */
 public class CameraServer {
 
     private static ArrayList<Camera> cameras;
