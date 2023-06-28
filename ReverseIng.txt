@@ -1,0 +1,50 @@
+// fa 98 91 37 - puerto 31200 (IP: 35.161.119.69, 18.138.95.10, 120.78.74.199)
+            // envia: 5d 09 98 00 ed 95 8e be  07 b2 43 c0 5d 4f cb 7b  b7 68 49 e0 a3 89 80 58 - puerto 10886 (177.247.38.70, la ip local de la camara)
+            // responde: 5d 0a be 13 4d c9 48 2d  a4 47 38 ea f8 b7 fa  5b 0f da 1e bf b7 2e 39 - (aceptacion)
+            // envia: 5d 98 14 de 18 6a 52 36  fc fc f6 5f f6 5f b1 c3
+            //        39 9d 9b 85 b0 57 c0 38  89 eb 3f d6 27 64 e5 3b
+            //        af c1 48 43 ac 31 b2 2a  fb e8 a1 29 27 60 6c af
+            //        cf 91 71 63 fb fa 60 66  a4 26 42 e2 0e 90 22 56
+            //        f7 4e a5 e1 df ba 1f a0  af cb ef bd f8 c0 2a f1
+            //        c3 1f a5 ff 7e 53 bd
+            // responde: 5d 0a be 13 4d c9 48 2d  a4 47 38 ea f8 b7 fa  5b 0f da 1e bf b7 2e 39 - (aceptacion)
+            // responde: 5d 99 e6 bb fd b5 44 47  38 ea - (posible modalidad, llave)
+            // responde: 5d 98 14 95 1c bf b7 2e  38 e0 55 80 54 30 32 57
+            //           da 28 6b 8c 61 e5 28 38  da 76 d1 7b
+            // envia:    5d 99 e6 bb fd b5 44 47  38 ea - (posible modalidad, llave o apreton de manos aceptado)
+            // envia:    5d a8 0e f4
+            // responde: 5d a9 63 94
+            // envia:    5d a8 0e f4
+            // responde: 5d a8 0e f4
+            // envia:    5d a9 63 94
+            // responde: 5d a9 63 94
+            // envia:    5d b8 78 28
+            // envia: f[ESSID]&&&[ESSID] ###[Pass]7. - puerto 8090 (envia en modo AP los datos del router y contraseña al que conectar, para que se guarden y cambie al modo estacion)
+            //                                     - enviar sin []
+            // responde: 66 00 01 00 00 00 01 99   - ( respuesta OK)
+            // envia:    5d 09 98 00 ed 95 8e be  07 b2 43 c0 5d 4f cb 7b  b7 68 49 e0 a3 89 80 58 - puerto 10886
+            // responde: 5d 0a be 13 4d c9 48 2d  a4 47 38 ea f8 b7 fa  5b 0f da 1e bf b7 2e 39  
+            // envia: 5d 98 14 de 18 6a 52 36  fc fc f6 5f f6 5f b1 c3
+            //        39 9d 9b 85 b0 57 c0 38  89 eb 3f d6 27 64 e5 3b
+            //        af c1 48 43 ac 31 b2 2a  fb e8 a1 29 27 60 6c af
+            //        cf 91 71 63 fb fa 60 66  a4 26 42 e2 0e 90 22 56
+            //        f7 4e a5 e1 df ba 1f a0  af cb ef bd f8 c0 2a f1
+            //        c3 1f a5 ff 7e 53 bd
+            // responde: 5d 0a be 13 4d c9 48 2d  a4 47 38 ea f8 b7 fa  5b 0f da 1e bf b7 2e 39  
+            // responde: 5d 99 e6 bb fd b5 44 47  38 ea
+            // envia:    5d a8 0e f4
+            // responde: 5d a9 63 94
+            // envia:    5d a8 0e f4
+            // responde: 5d a8 0e f4
+            // envia:    5d a9 63 94
+            // responde: 5d a9 63 94
+            // envia:    5d b8 78 28
+            // envia:  5d 09 98 00 ed 95 8e be  07 b2 43 c0 5d 4f cb 7b  b7 68 49 e0 a3 89 80 58 - puerto 24238 (captura imagen real)
+            // responde: 5d 0a be 13 4d c9 48 2d  a4 47 38 ea f8 b7 fa  5b 0f da 1e bf b7 2e 39  - (preparado)
+            // envia: 5d 98 14 de 18 6a 52 36  fc fc f6 5f f6 5f b1 c3                           - (peticion)
+            //        39 9d 9b 85 b0 57 c0 38  89 eb 3f d6 27 64 e5 3b
+            //        af c1 48 43 ac 31 b2 2a  fb e8 a1 29 27 60 6c af
+            //        cf 91 71 63 fb fa 60 66  a4 26 42 e2 0e 90 22 56
+            //        f7 4e a5 e1 df ba 1f a0  af cb ef bd f8 c0 2a f1
+            //        c3 1f a5 ff 7e 53 bd
+            // responde: 5d 0a be 13 4d c9 48 2d  a4 47 38 ea f8 b7 fa  5b 0f da 1e bf b7 2e 39  - (aceptado)
