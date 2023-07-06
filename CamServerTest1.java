@@ -17,20 +17,20 @@ public class MyCam {
     private static ArrayList<Camera> cameras = new ArrayList<>();
     private static Map<String, Boolean> desiredMacAddress = new HashMap<>();
 
-    private static String StrimCad(String cad) {
+    private static String StrimHexCad(String cad) {
         return cad.replaceAll(" ", "").trim();   
     }
 
     public static void main(String[] args) {
         desiredMacAddress.put("00:1e:b5:84:8f:01", Boolean.FALSE);
         desiredMacAddress.put("f8:da:c:7d:e9:2f", Boolean.FALSE); // Dirección MAC deseada Ever Sparkle Technologies Ltd
-        String ip = "10.10.1.43";
+        /*String ip = "192.168.1.43";
         int[] ports = {/*8070,8080,*/12476, /*19122, 21664,24188,*/ 32108};
         //sendData(hexToAscii("5d782818"), "10.10.1.43", 32108);
         for (int port : ports) {
             System.out.println("\nProbing on port: " + port);
             sendData(hexToAscii("5d099800ed958ebe07b243c05d4fcb7bb76849e0a3898058"), ip, port);
-            sendData(hexToAscii(StrimCad("5d 98 14 de 18 6a 52 36  fc fc f6 5f f6 5f b1 c339 9d 9b 85 b0 57 c0 38  89 eb 3f d6 27 64 e5 3baf c1 48 43 ac 31 b2 2a  fb e8 a1 29 27 60 6c afcf 91 71 63 fb fa 60 66a42642e20e902256f74ea5e1dfba1fa0afcbefbdf8c02af1c31fa5ff7e53bd")), ip, port);
+            sendData(hexToAscii(StrimHexCad("5d 98 14 de 18 6a 52 36  fc fc f6 5f f6 5f b1 c339 9d 9b 85 b0 57 c0 38  89 eb 3f d6 27 64 e5 3baf c1 48 43 ac 31 b2 2a  fb e8 a1 29 27 60 6c afcf 91 71 63 fb fa 60 66a42642e20e902256f74ea5e1dfba1fa0afcbefbdf8c02af1c31fa5ff7e53bd")), ip, port);
             sendData(hexToAscii("5d99e6bbfdb5444738ea"), ip, port);
             sendData(hexToAscii("5d99e6bbfdb5444738eb"), ip, port);
             sendData(hexToAscii("5da80ef4"), ip, port);
@@ -41,7 +41,7 @@ public class MyCam {
             sendData(hexToAscii("5d99e6b112cfff130cb4ec83021b00af"), ip, port);
             sendData(hexToAscii("5d099800ed958ebe07b243c05d4fcb7bb76849e0a3898058"), ip, port);
         }
-        System.exit(0);
+        System.exit(0);*/
 
         Scanner in = new Scanner(System.in);
         while (true) {
