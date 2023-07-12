@@ -22,8 +22,9 @@ public class JCamara {
     }
 
     public static void main(String[] args) {
+        // Desired MAC addresses: Ever Sparkle Technologies Ltd
         desiredMacAddress.put("00:1e:b5:84:8f:01", Boolean.FALSE);
-        desiredMacAddress.put("f8:da:c:7d:e9:2f", Boolean.FALSE); // Dirección MAC deseada Ever Sparkle Technologies Ltd
+        desiredMacAddress.put("f8:da:c:7d:e9:2f", Boolean.FALSE); 
         
         Scanner in = new Scanner(System.in);
         while (true) {
