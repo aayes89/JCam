@@ -11,14 +11,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class MyCam {
+public class JCamara {
 
     private static ArrayList<Camera> cameras = new ArrayList<>();
     private static Map<String, Boolean> desiredMacAddress = new HashMap<>();
 
     private static String StrimHexCad(String cad) {
-        return cad.replaceAll(" ", "").trim();   
+        return cad.replaceAll(" ", "").trim();
     }
 
     public static void main(String[] args) {
@@ -71,8 +73,46 @@ public class MyCam {
                 case 2:
                     discoverCameras();
                     if (cameras.isEmpty()) {
-                        System.out.println("No cameras detected\nExiting the program!");
-                        System.exit(0);
+                        System.out.println("No cameras detected!");
+                        System.out.println("Do you want exit? Y o N");
+
+                        if (in.next().equalsIgnoreCase("y")) {
+                            System.out.println("Exiting the program!");
+                            System.exit(0);
+                        } else {
+                            System.out.println("If you know there's a camera online, please enter the IP address:");
+                            String ipCam = in.next();
+                            System.out.println("Enter the name of the camera, please:");
+                            String nCam = in.next();
+                            System.out.println("Trying to connect to " + nCam + " on: " + ipCam);
+                            try {
+                                initiateCameraSTMode(nCam, ipCam);
+                            } catch (IOException ex) {
+                                System.out.println("IOE: " + ex.getMessage());
+                            }
+                        }
+                    } else {
+                        System.out.println("Please select the camera to work with:");
+                        for (Camera cam : cameras) {
+                            System.out.println(cameras.indexOf(cam) + ". " + cam.toString());
+                        }
+                        String selectedCam = in.next();
+                        try {
+                            int option = Integer.parseInt(selectedCam);
+                            Camera myCam = cameras.get(option);
+                            if (myCam.ip.equals("192.168.4.153")) {
+                                System.out.println("This camera is on AP mode");
+                                initiateCameraAPMode(myCam.getName(), myCam.ip);
+                            } else {
+                                System.out.println("Trying to connect with " + myCam.getName());
+                                initiateCameraSTMode(myCam.getName(), myCam.ip);
+
+                            }
+                        } catch (NumberFormatException ex) {
+                            System.out.println("NFE: " + ex.getMessage());
+                        } finally {
+                            continue;
+                        }
                     }
                     System.out.println("Camera available!");
                     for (Camera cam : cameras) {
@@ -97,7 +137,8 @@ public class MyCam {
         }
     }
 
-    private static void initiateCamera(String name, String ip, DatagramSocket socket) throws IOException {
+    private static void initiateCameraAPMode(String name, String ip) throws IOException {
+        DatagramSocket socket = new DatagramSocket();
         byte[] buffer = new byte[2];
         InetAddress address = InetAddress.getByName(ip);
         int port = 8070;
@@ -117,6 +158,29 @@ public class MyCam {
 
         Camera camera = new Camera(name, ip, socket);
         cameras.add(camera);
+    }
+
+    private static void initiateCameraSTMode(String nCam, String ip) throws IOException {
+
+        DatagramSocket socket = new DatagramSocket();
+        byte[] buffer = new byte[2];
+        InetAddress address = InetAddress.getByName(ip);
+        int port = 12476;
+        buffer[0] = (byte) 0x30;
+        buffer[1] = (byte) 0x67;
+        socket.send(new DatagramPacket(buffer, buffer.length, address, port));
+
+        buffer[0] = (byte) 0x30;
+        buffer[1] = (byte) 0x66;
+        socket.send(new DatagramPacket(buffer, buffer.length, address, port));
+
+        port = 32108;
+        buffer[0] = (byte) 0x42;
+        buffer[1] = (byte) 0x76;
+        socket.send(new DatagramPacket(buffer, buffer.length, address, port));
+        buffer = hexToAscii("5d782818").getBytes();
+        socket.send(new DatagramPacket(buffer, buffer.length, address, port));
+
     }
 
     private static boolean setStationMode(String essid, String pass) {
