@@ -1,4 +1,4 @@
-package mycam;
+package jcam;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class JCamara {
     public static void main(String[] args) {
         desiredMacAddress.put("00:1e:b5:84:8f:01", Boolean.FALSE);
         desiredMacAddress.put("f8:da:c:7d:e9:2f", Boolean.FALSE); // Dirección MAC deseada Ever Sparkle Technologies Ltd
-       
+        
         Scanner in = new Scanner(System.in);
         while (true) {
             System.out.println("--- MENU ---");
@@ -60,15 +60,20 @@ public class JCamara {
                             System.out.println("Exiting the program!");
                             System.exit(0);
                         } else {
-                            System.out.println("If you know there's a camera online, please enter the IP address:");
+                            System.out.println("If you know there is a camera online, enter the IP address:");
                             String ipCam = in.next();
-                            System.out.println("Enter the name of the camera, please:");
-                            String nCam = in.next();
-                            System.out.println("Trying to connect to " + nCam + " on: " + ipCam);
-                            try {
-                                initiateCameraSTMode(nCam, ipCam);
-                            } catch (IOException ex) {
-                                System.out.println("IOE: " + ex.getMessage());
+                            if (isAnIP(ipCam)) {
+                                System.out.println("Enter the name of the camera, please:");
+                                String nCam = in.next();
+                                System.out.println("Trying to connect to " + nCam + " on: " + ipCam);
+                                try {
+                                    initiateCameraSTMode(nCam, ipCam);
+                                } catch (IOException ex) {
+                                    System.out.println("IOE: " + ex.getMessage());
+                                }
+                            } else {
+                                System.out.println("This app is not a chatbot, I'm not programmed to know what you think.\nThe program will exit now!");
+                                System.exit(0);
                             }
                         }
                     } else {
@@ -86,7 +91,6 @@ public class JCamara {
                             } else {
                                 System.out.println("Trying to connect with " + myCam.getName());
                                 initiateCameraSTMode(myCam.getName(), myCam.ip);
-
                             }
                         } catch (NumberFormatException ex) {
                             System.out.println("NFE: " + ex.getMessage());
@@ -241,6 +245,26 @@ public class JCamara {
         }
     }
 
+    // validating if are correct
+    private static boolean isAnIP(String ip) {
+
+        if (ip.contains(".") && ip.split("\\.").length == 4) {
+            String[] parts = ip.split("\\.");
+            for (String part : parts) {
+                try {
+                    int value = Integer.parseInt(part);
+                    if (value < 0 || value > 255) {
+                        return false;
+                    }
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     private static String checkIP(String ip) {
         return ip.replace('(', ' ').replace(')', ' ').trim();
     }
@@ -270,7 +294,7 @@ public class JCamara {
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String line;
-                System.out.println("--- Tabla ARP ---\n");
+                System.out.println("--- ARP Table ---\n");
                 while ((line = reader.readLine()) != null) {
                     // Filtrar las líneas que contienen información de la tabla ARP
 
