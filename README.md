@@ -3,11 +3,11 @@ Java application to capture real-time images from the TT-Mini Spy Camera or the 
 
 Solution based on https://github.com/DEEFRAG/A9.git
 
-<br>Objectives achieved:</br>
+# Objectives achieved:
 * Switch the WF-A9-V3 from AP to Station mode
 * Detect WF-A9-V3 using ARP lookup from MAC address (Windows, GNU/Linux and MacOS probed)
 
-<br>TODO</br>
+# TODO
 * GUI
 * Take snapshots
 * Save videos to file
