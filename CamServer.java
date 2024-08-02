@@ -339,19 +339,27 @@ public class JCamara {
     }
 
     private static boolean isImageStart(byte[] buffer) {
-        for (int i = 0; i < buffer.length - 2; i++) {
-            if (buffer[i] == (byte) 0xff && buffer[i + 1] == (byte) 0xd8) {
+        for (int i = 0; i < buffer.length - 4; i++) {
+            //102 102 100 56 = 0xff 0xd8
+            if (buffer[i] == 102 && buffer[i + 1] == 102 && buffer[i + 2] == 100 && buffer[i + 3] == 56) {
                 return true;
             }
+            /*if (buffer[i] == (byte) 0xff && buffer[i + 1] == (byte) 0xd8) {
+                return true;
+            }*/
         }
         return false;
     }
 
     private static boolean isImageEnd(byte[] buffer) {
         for (int i = 0; i < buffer.length - 2; i++) {
-            if (buffer[i] == (byte) 0xff && buffer[i + 1] == (byte) 0xd9) {
+            //EOF - 0xff 0xd9
+            if (buffer[i] == 102 && buffer[i + 1] == 102 && buffer[i + 2] == 100 && buffer[i + 3] == 57) {
                 return true;
             }
+            /*if (buffer[i] == (byte) 0xff && buffer[i + 1] == (byte) 0xd9) {
+                return true;
+            }*/
         }
         return false;
     }
