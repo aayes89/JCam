@@ -16,6 +16,8 @@ public class JCamara {
 
     private static ArrayList<Camera> cameras = new ArrayList<>();
     private static Map<String, Boolean> desiredMacAddress = new HashMap<>();
+    private static byte[] IMAGE_STARTS = "ffd8".getBytes();
+    private static byte[] IMAGE_ENDS = "ffd9".getBytes();
 
     private static String StrimHexCad(String cad) {
         return cad.replaceAll(" ", "").trim();
