@@ -1,4 +1,4 @@
-# JCam
+# JCamara
 Aplicación Java nativa para el manejo y captura en tiempo real de cámaras TT-Mini Spy, WF-A9-V3 y similares. <br>
 Basado en el proyecto: https://github.com/DEEFRAG/A9.git<br>
 
