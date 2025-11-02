@@ -1,0 +1,683 @@
+
+
+ \ | /
+- RT -     Thread Operating System
+ / | \     3.1.0 build Aug 20 2021
+ 2006 - 2018 Copyright by rt-thread team
+No TLV header found in flash
+default MAC:c8:47:8c:00:00:00
+No TLV header found in flash
+SEARCH PASSWORD FAIL
+user cfg MAC:00:1e:b5:86:15:6c
+[FUNC]rwnxl_init
+deep_ps gpio clear over
+[FUNC]calibration_main
+get rfcali_mode:0
+tssi_th:b-125, g-100
+fit n20 tab with dist:2
+fit n20 tab with dist:2
+fit n20 tab with dist:2
+txpwr table for ble ch0/19/39 inused
+NO TXID found in flash, use lpf i&q:14, 14
+NO TXID found in flash, use def xtal:8
+xtal in flash is:8
+xtal_cali:8
+[FUNC]ps_init
+[FUNC]func_init OVER!!!
+
+lwIP-2.0.2 initialized!
+set dac vol:99 - indx:16,dig:45,ana:1a
+set adc vol: 99 - 99
+igmp_mac_filter add 224.0.0.1 01:00:5E:00:00:01
+register station wlan device sucess!
+igmp_mac_filter add 224.0.0.1 01:00:5E:00:00:01
+register soft-ap wlan device sucess!
+beken wlan hw init
+drv_pm_init
+[D/FAL] (fal_flash_init:63) Flash device |             beken_onchip | addr: 0x00000000 | len: 0x00400000 | blk_size: 0x00001000 |initialized finish.
+[D/FAL] (fal_flash_init:63) Flash device |         beken_onchip_crc | addr: 0x00000000 | len: 0x00400000 | blk_size: 0x00001000 |initialized finish.
+[D/FAL] (fal_partition_init:176) Find the partition table on 'beken_onchip_crc' offset @0x0000d2cc.
+[I/FAL] ==================== FAL partition table ====================
+[I/FAL] | name       | flash_dev        |   offset   |    length  |
+[I/FAL] -------------------------------------------------------------
+[I/FAL] | bootloader | beken_onchip_crc | 0x00001f00 | 0x0000e000 |
+[I/FAL] | app        | beken_onchip_crc | 0x00010000 | 0x00110000 |
+[I/FAL] | download   | beken_onchip     | 0x00132000 | 0x000cc000 |
+[I/FAL] =============================================================
+[I/FAL] RT-Thread Flash Abstraction Layer (V0.4.0) initialize success.
+TZH customer=2
+ROMFS File System initialized!
+Enter normal mode...
+
+app_init finished
+app_led_init
+start watch dog
+rt_hw_wdg_start time=10000 threshold=5000
+app_demo_apcfg_init 1
+PPCScfm DID=ACCQ-490677-GDMZN
+PPCScfm DID_APILICENSE=DAFHIQ
+Camera name=Camera
+User name=admin
+User password=admin
+SSID null !!!
+demo_apcfgctr.state=0!!!!
+DEMO_APCFG_START!!!!
+video close
+app_demo_softap_init
+ap: 00:1e:b5:86:15:6d,1,0,ACCQ490677GDMZN,0,
+set ip info: 192.168.4.153,255.255.255.0,192.168.4.153
+ssid:ACCQ490677GDMZN  key:
+Soft_AP_start
+[saap]MM_RESET_REQ
+[saap]ME_CONFIG_REQ
+[saap]ME_CHAN_CONFIG_REQ
+[saap]MM_START_REQ
+hapd_intf_add_vif,type:3, s:0, id:0
+apm start with vif:0
+vif_idx:0, ch_idx:0, bcmc_idx:2
+uap_ip_start
+
+configuring interface uap (with Static IP)
+please use rtthread dncp start server
+DHCP server start request video open
+video_intf_main
+video_transfer_init 3
+video_transfer_main entry
+video transfer send type:3
+set 640x480 bitrate size
+Camera Reset
+fps_type=1
+set FPS OK
+hi0704 init finish
+camera_intfer_init,a5a50003-a5a50005
+=======camera_intfer_init END!!=======
+vbuf opened
+
+ sd check init-----
+sd_check_init ok!
+voice open
+tvoice init 0001e369
+tvoice main
+set adc sample rate 8000
+set adc channel 1
+adc-buf:0041a788, adc-buf-len:5888, ch:1
+msh />���u���u�����������5������u��������am��5)mm��: command not found.
+msh />��Х���1���Ɂ�Y��ѹ������ѥ���镁�Ս���͹mm��5)Qi!����Q������5)I=5M�����M��ѕ����ѥ���镑�5)�ѕɀ��ɵ����������55)5)���msh />55)���}���: command not found.
+msh />}ݑ��х���Х������A���ɕ̡��������5)���: command not found.
+msh />)AA: command not found.
+msh />�%}A!1%: command not found.
+msh />�Ʌ45)U͕Ɂ����u�����55)U̕������ܽɑ�����55!MM%�ձ�����55)����: command not found.
+msh />ѕ������55)5=A: command not found.
+msh />х�}��%�5)������ŕ����aY����ّ�ű��: command not found.
+msh />с�����������ɹ����ѹ��ͱ��չ��չ��չ����ɹ����ѹ���55)�ͥ��: command not found.
+msh
+flash0
+flash1
+sd
+udisk
+msh />�55)E���A}MхI�5mͅ��u55=IMA}IE55(m̈́��$A!�
+msh />�55)E���A}MхI�5mͅ��u55=IMA}IE55(m̈́��$A!�A Q��!�55)E���A}MхI�5mͅ��u55=IMA}IE55(m̈́��$A!�A: command not found.
+msh�A��P�D�PA: command not found.
+msh />: command not found.
+msh@(H�: command not found.
+ssid:7231u-test key:12345678
+hapd_intf_add_vif,type:2, s:0, id:1
+wpa_dInit
+wpa_supplicant_req_scan
+Setting scan request: 0.100000 sec
+MANUAL_SCAN_REQ
+sta ssid=7231u-test ,psw=12345678
+app_demo_station_main
+!$: command not found.
+msh />
+msh />�9Q���Y���e����9Q���Y���e��鑁�)���: command not found.
+msh /`b@��}�%�%q�|��AFɕ�: command not found.
+wpa_driver_scan_cb
+get_scan_rst_null
+MSG_NO_AP_FOUND!!!
+Failed to get scan results - try scanning again
+wpa_supplicant_req_scan
+Setting scan request: 1.000000 sec
+@(: command not found.
+msh />
+msh />���ɕ���́����%�͌�����������55)���}����������}ɕ�}͍��5)E�Qѥ��͍�9�ɕՔ��)�Ź�������͑�55)
+msh />���ɕ���́����%�͌�����������55)���}����������}ɕ�}͍��5)E�Qѥ��͍�9�ɕՔ��)�Ź�������͑�55)����ɕ���́����%�͌�����������55)���}����������}ɕ�}͍��5)E�Qѥ��͍�9�ɕՔ��)�Ź�                                                                                        ������͑�55)�i�������������ԙ��5)�M!msh />�����%�͌���������%�5)���: command not found.
+msh />
+msh />msh />msh />�)�Ź����A��͑�5)���ɕ���́��Q�%�������������5)���}����������: command not found.
+msh />ɕ�}͍��)E�Q���: command not found.
+msh />���ɕՐ��)�Ź������M��55(�i��=����������T���)�M!msh: command not found.
+msh />msh />ad: command not found.
+ms`: command not found.
+msh />��́��Q�%�������������5)���U��������:: command not found.
+msh />man`fot: command not found.
+msh />msh />msh />msh />msh />ms`: command not found.
+ms`: command not found.
+msh />-sh: command not found.
+msh />eand: command not found.
+msh />-sh: command not found.
+msh />msh />msh />sh: command not found.
+ms: command not found.
+msh />msh />msh />-sh: command not found.
+msh />msh />lsh: command not found.
+msh />msh />mqh: command not found.
+mq: command not found.
+msh />mh: command not found.
+msh />sh: command not found.
+msh />msh />msh />ms`: command not found.
+mq: command not found.
+msh />coemand: command not found.
+msh />msh /a: command not found.
+msh />msh /esh: command not found.
+msh /ms`/>m: command not found.
+msh />co%maf: command not found.
+mq:: command not found.
+msh />msh />msh />msh m3h: command not found.
+msh-3h: command not found.
+msh />msh msh />mqh: command not found.
+mq::: command not found.
+msh /mssh: command not found.
+msh />m-sh: command not found.
+e1:::: command not found.
+msmsmqh: command not found.
+1:::: command not found.
+ms: command not found.
+msh />!nd: command not found.
+1:::8: command not found.
+mq: command not found.
+msh />m!nd: command not found.
+msh />msh />msh />sh: command not found.
+1:::88: command not found.
+mq:: command not found.
+msh />mqh/>m!nd:c/mmand: command not found.
+msh />msh />sh: command not found.
+1::::: command not found.
+mq::: command not found.
+msh />and: command not found.
+msh />msh />msh />msh: command not found.
+1::: command not found.
+msh />::: command not found.
+mq:8:: command not found.
+1::: command not found.
+-q:8:: command not found.
+msh />and: command not found.
+1:::: command not found.
+%::: command not found.
+1::::: command not found.
+ wpa_supplicant_scan
+wpa_drv_scan
+wpa_send_scan_req
+%:::: command not found.
+1:8::: command not found.
+qpa_upp,i`antCqcan: command not found.
+msh />msh />wpaG$v_can: command not found.
+msh />msh />msh />7pasefd_scab_req: command not found.
+msh />: command not found.
+%:::8: command not found.
+1:8:: command not found.
+msh />: command not found.
+
+msh />paCupp paCupp: command not found.
+msh />msh />msh />msh />mqh: command not found.
+msh />sh: command not found.
+%:::8:: command not found.
+1:8::c`-mand: command not found.
+msh />msh />lsh: command not found.
+msh />msh />msh />sh/msh: command not found.
+ma`d: command not found.
+m%:::8:colmand: command not found.
+1:8::c`-mand:: command not found.
+msh />msh />-sh: command not found.
+msh />sh/>esh: command not found.
+msh />msh esh: command not found.
+m%:: command not found.
+msh />:8:colmand:coemand: command not found.
+1:8::c`%mand:: command not found.
+mph: command not found.
+msh /mph: command not found.
+m%::: command not found.
+1:8::c`mand::: command not found.
+mph:: command not found.
+nd: command not found.
+-%:::: command not found.
+nd: command not found.
+msh not: command not found.
+-%:::: command not found.
+fd:: command not found.
+-%:::: command not found.
+fd::: command not found.
+msh />%: command not found.
+msh />::: command not found.
+msh />and: command not found.
+f: command not found.
+msh />msh />msh />msh />-sh: command not found.
+f:: command not found.
+e3h: command not found.
+msh />sh: command not found.
+f::: command not found.
+e3`:: command not found.
+msh />msh />esh: command not found.
+f:::: command not found.
+msh />mand: command not found.
+e3`::: command not found.
+f::: command not found.
+e3`:::: command not found.
+f::: command not found.
+msh />command: command not found.
+e3`::::: command not found.
+f:::: command not found.
+e3`:::::: command not found.
+f::::: command not found.
+msh />mand: command not found.
+e1`::::::: command not found.
+b:::::: command not found.
+msh />mabd: command not found.
+e1`:::::::: command not found.
+b:::::: command not found.
+e1`::::::::: command not found.
+b::::::: command not found.
+e1`::::::::: command not found.
+b::::::: command not found.
+e1`:::::::::: command not found.
+:::: command not found.
+msh />:: command not found.
+e1`::::::::::: command not found.
+::::: command not found.
+e1`:::::::::::: command not found.
+:::::: command not found.
+e1`8:8:: command not found.
+msh />: command not found.
+msh />:8::: command not found.
+::::::: command not found.
+e1`:8::: command not found.
+msh />ma`d: command not found.
+wpa_driver_scan_cb
+get_scan_rst_null
+MSG_NO_AP_FOUND!!!
+Failed to get scan results - try scanning again
+wpa_supplicant_req_scan
+Setting scan request: 1.000000 sec
+:::::::: command not found.
+e1`:8::: command not found.
+wpaGdrie_3can_cb: command not found.
+msh />msh />msh />et_san_st@null: command not found.
+msh />msh />MSG_@OA_F@UND!!!: command not found.
+msh />msh />msh />Failed: command not found.
+msh />try: command not found.
+msh />msh />msh />wpa_supplicab_req_scaf: command not found.
+msh />msh />msh />Setting: command not found.
+::::::::: command not found.
+e1`88:::: command not found.
+wpaGdrie_3can_cb:: command not found.
+msh />msh />msh />msh />msh />msh />msh />msh />msh />msh />mph: command not found.
+:::::::::: command not found.
+e1`8::::: command not found.
+
+msh />wpaGdrwpaGdre_3can_#b:: command not found.
+::::::::::: command not found.
+e1`8:::::: command not found.
+:::::::::::: command not found.
+e1`8::::::: command not found.
+::::::::::::: command not found.
+e1`8:::::::: command not found.
+wpa_supplicant_scan
+wpa_drv_scan
+wpa_send_scan_req
+:::::::::::::: command not found.
+e1`8::::::::: command not found.
+wpa_supplicant_scan: command not found.
+msh />msh />msh />wpa_drv_scan: command not found.
+msh />msh />msh />wpa_send_scan_req: command not found.
+::::::::::::::: command not found.
+%1`8:::::::::: command not found.
+wpa_supplicant_scan:: command not found.
+msh />h: command not found.
+:::::::::::::::: command not found.
+%1`8::::::::::: command not found.
+wpa_supplicant_scan::: command not found.
+:::::::::::::::: command not found.
+wpa_supplicant_scan:::: command not found.
+::::::::::::::::: command not found.
+
+ \ | /
+- RT -     Thread Operating System
+ / | \     3.1.0 build Aug 20 2021
+ 2006 - 2018 Copyright by rt-thread team
+No TLV header found in flash
+default MAC:c8:47:8c:00:00:00
+No TLV header found in flash
+SEARCH PASSWORD FAIL
+user cfg MAC:00:1e:b5:86:15:6c
+[FUNC]rwnxl_init
+deep_ps gpio clear over
+[FUNC]calibration_main
+get rfcali_mode:0
+tssi_th:b-125, g-100
+fit n20 tab with dist:2
+fit n20 tab with dist:2
+fit n20 tab with dist:2
+txpwr table for ble ch0/19/39 inused
+NO TXID found in flash, use lpf i&q:14, 14
+NO TXID found in flash, use def xtal:8
+xtal in flash is:8
+xtal_cali:8
+[FUNC]ps_init
+[FUNC]func_init OVER!!!
+
+lwIP-2.0.2 initialized!
+set dac vol:99 - indx:16,dig:45,ana:1a
+set adc vol: 99 - 99
+igmp_mac_filter add 224.0.0.1 01:00:5E:00:00:01
+register station wlan device sucess!
+igmp_mac_filter add 224.0.0.1 01:00:5E:00:00:01
+register soft-ap wlan device sucess!
+beken wlan hw init
+drv_pm_init
+[D/FAL] (fal_flash_init:63) Flash device |             beken_onchip | addr: 0x00000000 | len: 0x00400000 | blk_size: 0x00001000 |initialized finish.
+[D/FAL] (fal_flash_init:63) Flash device |         beken_onchip_crc | addr: 0x00000000 | len: 0x00400000 | blk_size: 0x00001000 |initialized finish.
+[D/FAL] (fal_partition_init:176) Find the partition table on 'beken_onchip_crc' offset @0x0000d2cc.
+[I/FAL] ==================== FAL partition table ====================
+[I/FAL] | name       | flash_dev        |   offset   |    length  |
+[I/FAL] -------------------------------------------------------------
+[I/FAL] | bootloader | beken_onchip_crc | 0x00001f00 | 0x0000e000 |
+[I/FAL] | app        | beken_onchip_crc | 0x00010000 | 0x00110000 |
+[I/FAL] | download   | beken_onchip     | 0x00132000 | 0x000cc000 |
+[I/FAL] =============================================================
+[I/FAL] RT-Thread Flash Abstraction Layer (V0.4.0) initialize success.
+TZH customer=2
+ROMFS File System initialized!
+Enter normal mode...
+
+app_init finished
+app_led_init
+start watch dog
+rt_hw_wdg_start time=10000 threshold=5000
+app_demo_apcfg_init 1
+PPCScfm DID=ACCQ-490677-GDMZN
+PPCScfm DID_APILICENSE=DAFHIQ
+Camera name=Camera
+User name=admin
+User password=admin
+SSID null !!!
+demo_apcfgctr.state=0!!!!
+DEMO_APCFG_START!!!!
+video close
+app_demo_softap_init
+ap: 00:1e:b5:86:15:6d,1,0,ACCQ490677GDMZN,0,
+set ip info: 192.168.4.153,255.255.255.0,192.168.4.153
+ssid:ACCQ490677GDMZN  key:
+Soft_AP_start
+[saap]MM_RESET_REQ
+[saap]ME_CONFIG_REQ
+[saap]ME_CHAN_CONFIG_REQ
+[saap]MM_START_REQ
+hapd_intf_add_vif,type:3, s:0, id:0
+apm start with vif:0
+vif_idx:0, ch_idx:0, bcmc_idx:2
+uap_ip_start
+
+configuring interface uap (with Static IP)
+please use rtthread dncp start server
+DHCP server start request video open
+video_intf_main
+video_transfer_init 3
+video_transfer_main entry
+video transfer send type:3
+set 640x480 bitrate size
+Camera Reset
+fps_type=1
+set FPS OK
+hi0704 init finish
+camera_intfer_init,a5a50003-a5a50005
+=======camera_intfer_init END!!=======
+vbuf opened
+
+ sd check init-----
+sd_check_init ok!
+voice open
+tvoice init 0001e369
+tvoice main
+set adc sample rate 8000
+set adc channel 1
+adc-buf:0041a788, adc-buf-len:5888, ch:1
+msh />
+RT-Thread shell commands:
+mac              - set_or_read_mac
+rxsens           - do_rx_sens
+txevm            - do_tx_evm
+jpegrate         - jpegrate
+stop_apcfg       - stop_apcfg test
+start_apcfg      - start_apcfg test
+ledtest          - ledtestcmd
+video            - video
+audio            - audio
+adpcm            - adpcm
+did              - didcmd
+app_playback_all_video_test - all_video
+video_audio_restart_test - restart
+app_playback_resume_test - resume
+app_playback_pause_test - pause
+app_playback_stop_test - stop
+app_playback_play_test - play
+send_video_test  - file_index
+send_videoframe_test - send_videoframe
+filelist_resp_test - file_count_onetime
+j2avi_test       - j2avi test
+rfcali_show_data - rfcali show data
+rfcali_cfg_tssi_g - rfcali cfg tssi
+rfcali_cfg_rate_dist - rfcali cfg rate_dist
+rfcali_cfg_mode  - rfcali cfg mode
+rfcali_cfg_tssi_b - rfcali cfg tssi
+cam              - CamCommand
+limit_test       - list_limit_play
+lister_dump      - lister dump
+lister_del_by_index - lister delete by index
+lister_del       - lister delete
+lister_add       - lister add
+lister_empty     - lister empty
+lister_mode      - lister mode
+lister_prev      - lister prev
+lister_next      - lister next
+lister_resume    - lister resume
+lister_suspend   - lister suspend
+lister_stop      - lister stop
+lister_detach    - lister stop
+lister_play      - lister player
+list_send        - list_player_event_send
+list_test        - list_player_test
+player           - player test
+stream_pipe_dump - stream pipe info dump
+stream_buffer    - stream buffer read / write size
+play_data        - play_data_test
+audio_dump       - audio_dump
+setmicvol        - setmic vol param
+scan_ssid        - scan_ssid
+fast_connect_dump - fast_connect_dump
+wdg_stop         - wdg_stop
+wdg_refresh      - wdg_refresh
+reboot           - reboot system
+set_log          - set_log on or off
+stack            - rt_hw_stack_print
+netio_init       - netio server
+ntp_sync         - Update time by NTP(Network Time Protocol)
+ping             - ping network host
+mq_pub           - publish mqtt msg
+mq_start         - startup mqtt client
+wget             - web download file
+airkiss          - start_ariksss
+alarm_ota        - OTA by http client: http_ota [url]
+http_ota         - OTA by http client: http_ota [url]
+gpio             - gpio sample
+batt_adc_read    - batt command
+adc_channel_test - adc test
+sleep_mode       - test sleep mode
+mic_dac_loop     - mic dac loop
+pwm_change_param - pwm change param
+cmd_test_pwm_init - cmd pwm init
+record_pcm_tcp   - record pcm tcp
+mcu_ps_disable   - bk_wlan_mcu_ps_mode_disable
+mcu_ps           - bk_wlan_mcu_ps_mode_enable
+rf_ps            - bk_wlan_dtim_rf_ps_mode_enable
+pm_level         - pm_level 1
+wavplay          - wavplay song.wav
+list_fd          - list file descriptor
+list_device      - list device in system
+list_timer       - list timer in system
+list_mempool     - list memory pool in system
+list_memheap     - list memory heap in system
+list_msgqueue    - list message queue in system
+list_mailbox     - list mail box in system
+list_mutex       - list mutex in system
+list_event       - list event in system
+list_sem         - list semaphore in system
+list_thread      - list thread
+version          - show RT-Thread version information
+help             - RT-Thread shell help.
+free             - Show the memory usage in the system.
+time             - Execute command with time.
+ps               - List threads in the system.
+netstat          - list the information of TCP / IP
+dns              - list the information of dns
+ifconfig         - list the information of network interfaces
+echo             - echo string to file
+df               - disk free
+mkfs             - format disk with file system
+mkdir            - Create the DIRECTORY.
+pwd              - Print the name of the current working directory.
+cd               - Change the shell working directory.
+rm               - Remove(unlink) the FILE(s).
+cat              - Concatenate FILE(s)
+mv               - Rename SOURCE to DEST.
+cp               - Copy SOURCE to DEST.
+ls               - List information about the FILEs.
+fal              - FAL (Flash Abstraction Layer) operate.
+date             - get date and time or set [year month day hour min sec]
+wifi             - wifi command
+                                                                                     ���ɵ�ѥ���������5)����������������������сѡ������ɵ�ѥ���������ݽɭ���ѕə����5)�������msh:msh />msh />msh />msh />msh />msh />msh />msh />msh />msh />msh />                                                                                        msh />ssid:7231u-test key:12345678
+hapd_intf_add_vif,type:2, s:0, id:1
+wpa_dInit
+wpa_supplicant_req_scan
+Setting scan request: 0.100000 sec
+MANUAL_SCAN_REQ
+sta ssid=7231u-test ,psw=12345678
+app_demo_station_main
+
+msh />wpa_supplicant_scan
+wpa_drv_scan
+wpa_send_scan_req
+
+msh /
+RT-Thread shell commands:
+mac              - set_or_read_mac
+rxsens           - do_rx_sens
+txevm            - do_tx_evm
+jpegrate         - jpegrate
+stop_apcfg       - stop_apcfg test
+start_apcfg      - start_apcfg test
+ledtest          - ledtestcmd
+video            - video
+audio            - audio
+adpcm            - adpcm
+did              - didcmd
+app_playback_all_video_test - all_video
+video_audio_restart_test - restart
+app_playback_resume_test - resume
+app_playback_pause_test - pause
+app_playback_stop_test - stop
+app_playback_play_test - play
+send_video_test  - file_index
+send_videoframe_test - send_videoframe
+filelist_resp_test - file_count_onetime
+j2avi_test       - j2avi test
+rfcali_show_data - rfcali show data
+rfcali_cfg_tssi_g - rfcali cfg tssi
+rfcali_cfg_rate_dist - rfcali cfg rate_dist
+rfcali_cfg_mode  - rfcali cfg mode
+rfcali_cfg_tssi_b - rfcali cfg tssi
+cam              - CamCommand
+limit_test       - list_limit_play
+lister_dump      - lister dump
+lister_del_by_index - lister delete by index
+lister_del       - lister delete
+lister_add       - lister add
+lister_empty     - lister empty
+lister_mode      - lister mode
+lister_prev      - lister prev
+lister_next      - lister next
+lister_resume    - lister resume
+lister_suspend   - lister suspend
+lister_stop      - lister stop
+lister_detach    - lister stop
+lister_play      - lister player
+list_send        - list_player_event_send
+list_test        - list_player_test
+player           - player test
+stream_pipe_dump - stream pipe info dump
+stream_buffer    - stream buffer read / write size
+play_data        - play_data_test
+audio_dump       - audio_dump
+setmicvol        - setmic vol param
+scan_ssid        - scan_ssid
+fast_connect_dump - fast_connect_dump
+wdg_stop         - wdg_stop
+wdg_refresh      - wdg_refresh
+reboot           - reboot system
+set_log          - set_log on or off
+stack            - rt_hw_stack_print
+netio_init       - netio server
+ntp_sync         - Update time by NTP(Network Time Protocol)
+ping             - ping network host
+mq_pub           - publish mqtt msg
+mq_start         - startup mqtt client
+wget             - web download file
+airkiss          - start_ariksss
+alarm_ota        - OTA by http client: http_ota [url]
+http_ota         - OTA by http client: http_ota [url]
+gpio             - gpio sample
+batt_adc_read    - batt command
+adc_channel_test - adc test
+sleep_mode       - test sleep mode
+mic_dac_loop     - mic dac loop
+pwm_change_param - pwm change param
+cmd_test_pwm_init - cmd pwm init
+record_pcm_tcp   - record pcm tcp
+mcu_ps_disable   - bk_wlan_mcu_ps_mode_disable
+mcu_ps           - bk_wlan_mcu_ps_mode_enable
+rf_ps            - bk_wlan_dtim_rf_ps_mode_enable
+pm_level         - pm_level 1
+wavplay          - wavplay song.wav
+list_fd          - list file descriptor
+list_device      - list device in system
+list_timer       - list timer in system
+list_mempool     - list memory pool in system
+list_memheap     - list memory heap in system
+list_msgqueue    - list message queue in system
+list_mailbox     - list mail box in system
+list_mutex       - list mutex in system
+list_event       - list event in system
+list_sem         - list semaphore in system
+list_thread      - list thread
+version          - show RT-Thread version information
+help             - RT-Thread shell help.
+free             - Show the memory usage in the system.
+time             - Execute command with time.
+ps               - List threads in the system.
+netstat          - list the information of TCP / IP
+dns              - list the information of dns
+ifconfig         - list the information of network interfaces
+echo             - echo string to file
+df               - disk free
+mkfs             - format disk with file system
+mkdir            - Create the DIRECTORY.
+pwd              - Print the name of the current working directory.
+cd               - Change the shell working directory.
+rm               - Remove(unlink) the FILE(s).
+cat              - Concatenate FILE(s)
+mv               - Rename SOURCE to DEST.
+cp               - Copy SOURCE to DEST.
+ls               - List information about the FILEs.
+fal              - FAL (Flash Abstraction Layer) operate.
+date             - get date and time or set [year month day hour min sec]
+wifi             - wifi command
+
+
+msh />threads`in`the`systemnMJnetstat``````````m`list`the`information`of`Tsion`informationMJhelp``````````@[.-�ɹ�1���ɥ����Ʌѕ�5)�msh />
