@@ -15,8 +15,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+
 /*
-* Made by Slam (2025)
+* Hecho por Slam (2025)
 */
 
 public class JCamara {
@@ -356,32 +357,6 @@ public class JCamara {
                 } else {
                     sendHttpError(clientSocket.getOutputStream(), 404, "Not Found");
                 }
-
-                // old version
-                /*while (true) {
-                        byte[] buffer = new byte[4096];
-                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-                        camera.getSocket().receive(packet);
-
-                        buffer = packet.getData();
-
-                        if (isImageStart(buffer)) {
-                            camera.setFrame(Arrays.copyOfRange(buffer, 8, buffer.length));
-                        } else {
-                            byte[] newFrame = new byte[camera.getFrame().length + buffer.length];
-                            System.arraycopy(camera.getFrame(), 0, newFrame, 0, camera.getFrame().length);
-                            System.arraycopy(buffer, 0, newFrame, camera.getFrame().length, buffer.length);
-                            camera.setFrame(newFrame);
-                        }
-
-                        if (isImageEnd(buffer)) {
-                            sendImage(clientSocket, camera.getFrame());
-                        }
-                    }
-            }else {
-                    clientSocket.close();
-                    System.out.println("Data streaming closed");
-                }*/
             } catch (SocketException se) {
                 System.err.println("Stream ended: " + se.getMessage());
             } catch (IOException e) {
@@ -398,24 +373,169 @@ public class JCamara {
     // Publica la página html estática
     private static void sendHtml(OutputStream out) throws IOException {
         String html = """
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>JCamara A9</title>
-                    <style>
-                        body { background:#000; color:#0f0; text-align:center; font-family:monospace; }
-                        img { width:90%%; max-width:640px; margin-top:30px; border:3px solid #0f0; border-radius:12px; }
-                        h2 { color:#0f0; margin-top:20px; }
-                    </style>
-                </head>
-                <body>
-                    <h2>JCamara A9 Live</h2>
-                    <img src="/stream" alt="Camera Stream">
-                </body>
-                </html>
-                """;
+                       <!DOCTYPE html>
+                       <html lang="es">
+                       <head>
+                       <meta charset="UTF-8">
+                       <title>JCamara MJPEG Stream</title>
+                       <style>
+                         body {
+                           background: #111;
+                           color: #ddd;
+                           font-family: monospace;
+                           text-align: center;
+                         }
+                         #stream {
+                           border: 2px solid #333;
+                           border-radius: 8px;
+                           width: 80%;
+                           max-width: 800px;
+                           height: auto;
+                           margin-top: 20px;
+                         }
+                         button {
+                           margin: 10px;
+                           padding: 10px 20px;
+                           background: #222;
+                           color: #eee;
+                           border: 1px solid #555;
+                           border-radius: 6px;
+                           cursor: pointer;
+                         }
+                         button:hover {
+                           background: #444;
+                         }
+                         #status {
+                           margin-top: 10px;
+                           font-size: 14px;
+                           color: #0f0;
+                         }
+                       </style>
+                       </head>
+                       <body>
+                       
+                       <h2>JCamara Stream (MJPEG)</h2>
+                       
+                       <img id="stream" src="http://127.0.0.1:8081/stream" alt="Stream no disponible">
+                       
+                       <div>
+                         <button id="btnCapture">📸 Capturar Imagen</button>
+                         <button id="btnStartRec">⏺ Iniciar Grabación</button>
+                         <button id="btnStopRec" disabled>⏹ Detener Grabación</button>
+                       </div>
+                       
+                       <canvas id="canvas" style="display:none;"></canvas>
+                       <div id="status"></div>
+                       
+                       <script>
+                       const img = document.getElementById('stream');
+                       const canvas = document.getElementById('canvas');
+                       const ctx = canvas.getContext('2d');
+                       const status = document.getElementById('status');
+                       
+                       const btnCapture = document.getElementById('btnCapture');
+                       const btnStartRec = document.getElementById('btnStartRec');
+                       const btnStopRec = document.getElementById('btnStopRec');
+                       
+                       let mediaRecorder;
+                       let recordedChunks = [];
+                       let recording = false;
+                       let animFrame;
+                       
+                       // === Captura de imagen ===
+                       btnCapture.onclick = () => {
+                         if (!img.complete) return;
+                         canvas.width = img.naturalWidth;
+                         canvas.height = img.naturalHeight;
+                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                         canvas.toBlob(blob => {
+                           const a = document.createElement('a');
+                           a.href = URL.createObjectURL(blob);
+                           a.download = `captura_${Date.now()}.png`;
+                           a.click();
+                           URL.revokeObjectURL(a.href);
+                         }, 'image/png');
+                         status.textContent = "📸 Imagen guardada.";
+                       };
+                       
+                       // === Grabación de video desde MJPEG ===
+                       function drawFrame() {
+                         if (recording) {
+                           canvas.width = img.naturalWidth;
+                           canvas.height = img.naturalHeight;
+                           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                         }
+                         animFrame = requestAnimationFrame(drawFrame);
+                       }
+                       
+                       // Detección automática de MIME compatible
+                       function getSupportedMimeType() {
+                         const types = [
+                           'video/webm;codecs=vp9',
+                           'video/webm;codecs=vp8',
+                           'video/webm',
+                           'video/mp4'
+                         ];
+                         for (const t of types) {
+                           if (MediaRecorder.isTypeSupported(t)) return t;
+                         }
+                         return '';
+                       }
+                       
+                       btnStartRec.onclick = () => {
+                         if (recording) return;
+                         recording = true;
+                         canvas.width = img.naturalWidth;
+                         canvas.height = img.naturalHeight;
+                         recordedChunks = [];
+                       
+                         const mimeType = getSupportedMimeType();
+                         const stream = canvas.captureStream(33); // 15 FPS aprox
+                       
+                         try {
+                           mediaRecorder = new MediaRecorder(stream, { mimeType });
+                         } catch (e) {
+                           console.error('Fallo al crear MediaRecorder:', e);
+                           status.textContent = "⚠️ Grabación no soportada en este navegador.";
+                           recording = false;
+                           return;
+                         }
+                       
+                         mediaRecorder.ondataavailable = e => {
+                           if (e.data.size > 0) recordedChunks.push(e.data);
+                         };
+                       
+                         mediaRecorder.onstop = () => {
+                           const blob = new Blob(recordedChunks, { type: mimeType });
+                           const url = URL.createObjectURL(blob);
+                           const a = document.createElement('a');
+                           a.href = url;
+                           a.download = `grabacion_${Date.now()}.webm`;
+                           a.click();
+                           URL.revokeObjectURL(url);
+                           status.textContent = "🎥 Video guardado.";
+                         };
+                       
+                         mediaRecorder.start();
+                         drawFrame();
+                         btnStartRec.disabled = true;
+                         btnStopRec.disabled = false;
+                         status.textContent = "🔴 Grabando...";
+                       };
+                       
+                       btnStopRec.onclick = () => {
+                         if (!recording) return;
+                         recording = false;
+                         cancelAnimationFrame(animFrame);
+                         mediaRecorder.stop();
+                         btnStartRec.disabled = false;
+                         btnStopRec.disabled = true;
+                         status.textContent = "⏹ Grabación detenida.";
+                       };
+                       </script>
+                       </body>
+                       </html>
+                       """;
 
         byte[] data = html.getBytes(StandardCharsets.UTF_8);
         out.write(("HTTP/1.1 200 OK\r\n"
