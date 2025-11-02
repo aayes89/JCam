@@ -6,7 +6,7 @@ Solution based on https://github.com/DEEFRAG/A9.git
 # Objectives achieved:
 * Switch the WF-A9-V3 from AP to Station mode
 * Detect WF-A9-V3 using ARP lookup from MAC address (Windows, GNU/Linux and MacOS probed)
-* Boot dumped with PL2303 (OMG! username and password revealed)
+* Boot dumped with PL2303 (<b>OMG!</b> username and password revealed)
 
 # TODO
 * GUI
