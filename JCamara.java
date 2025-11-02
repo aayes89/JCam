@@ -15,20 +15,26 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
 /*
 * Made by Slam (2025)
 */
+
 public class JCamara {
 
-    private static ArrayList<Camera> cameras = new ArrayList<>();
-    private static Map<String, Boolean> desiredMacAddress = new HashMap<>();
-
-    private static String StrimHexCad(String cad) {
-        return cad.replaceAll(" ", "").trim();
-    }
+    private static final ArrayList<Camera> cameras = new ArrayList<>();
+    private static final Map<String, Boolean> desiredMacAddress = new HashMap<>();
+    // Socket UDP global, igual que "s" en tu script Python
+    private static DatagramSocket udpSocket = null;
+    // Bandera que indica si se inicializó la cámara con éxito (igual que camera_initialized)
+    private static volatile boolean cameraInitialized = false;
+    // Puerto remoto desde el que la cámara envía imágenes (normalmente 8080)
+    private static final int CAMERA_SRC_PORT = 8080;
+    private static volatile boolean runningServer = true;
+    private static final boolean DEBUG = false;
 
     public static void main(String[] args) {
+        // Dirección MAC deseada Ever Sparkle Technologies Ltd & Estatus
+        desiredMacAddress.put("00-1e-b5-84-8f-00", Boolean.FALSE);
         desiredMacAddress.put("00:1e:b5:86:15:6d", Boolean.FALSE);
         desiredMacAddress.put("00-1e-b5-86-15-6d", Boolean.FALSE);
         desiredMacAddress.put("00:1e:b5:86:15:6c", Boolean.FALSE);
@@ -37,65 +43,65 @@ public class JCamara {
         desiredMacAddress.put("00-1e-b5-84-8f-01", Boolean.FALSE);
         desiredMacAddress.put("c8:47:8c:00:00:00", Boolean.FALSE);
         desiredMacAddress.put("c8-47-8c-00-00-00", Boolean.FALSE);
-        desiredMacAddress.put("f8:da:0c:7d:e9:2f", Boolean.FALSE); // Dirección MAC deseada Ever Sparkle Technologies Ltd
+        desiredMacAddress.put("f8:da:0c:7d:e9:2f", Boolean.FALSE);
         desiredMacAddress.put("f8-da-0c-7d-e9-2f", Boolean.FALSE);
 
         Scanner in = new Scanner(System.in);
         while (true) {
             System.out.println("--- MENU ---");
-            System.out.println("1. Set Station Mode");
-            System.out.println("2. Connect to Camera");
+            System.out.println("1. Modo Estación (STA)");
+            System.out.println("2. Conectar a Cámara.");
             System.out.println("3. Detectar cámaras UDP.");
             System.out.println("4. Detectar puertos en cámaras UDP.");
-            System.out.println("0. Exit the program");
+            System.out.println("0. Salir del programa.");
             int opc = in.nextInt();
             switch (opc) {
                 case 0:
-                    System.out.println("See you next!");
+                    System.out.println("Hasta la próxima!");
                     System.exit(0);
                     break;
                 case 1:
-                    System.out.println("Type the ESSID");
+                    System.out.println("Ingrese el ESSID:");
                     String essid = in.next();
-                    System.out.println("Type the Pass");
+                    System.out.println("Ingrese la contraseña:");
                     String pass = in.next();
 
-                    System.out.println("Waiting for device");
+                    System.out.println("Esperando por respuesta...");
 
                     if (setStationMode(essid, pass)) {
-                        System.out.println("Station Mode Activated");
+                        System.out.println("Modo STA activado");
                     } else {
-                        System.out.println("Waiting...");
+                        System.out.println("Espere...");
                     }
                     break;
                 case 2:
                     discoverCameras();
                     if (cameras.isEmpty()) {
-                        System.out.println("No cameras detected!");
-                        System.out.println("Do you want exit? Y o N");
+                        System.out.println("No se encontraron cámaras!");
+                        System.out.println("Desea salir? Y o N");
 
                         if (in.next().equalsIgnoreCase("y")) {
-                            System.out.println("Exiting the program!");
+                            System.out.println("Saliendo del programa!");
                             System.exit(0);
                         } else {
-                            System.out.println("If you know there is a camera online, enter the IP address:");
+                            System.out.println("Si sabe que su cámara está activa, ingrese su IP:");
                             String ipCam = in.next();
                             if (isAnIP(ipCam)) {
-                                System.out.println("Enter the name of the camera, please:");
+                                System.out.println("Íngrese un nombre para la cámara:");
                                 String nCam = in.next();
-                                System.out.println("Trying to connect to " + nCam + " on: " + ipCam);
+                                System.out.println("Conectando con " + nCam + " en: " + ipCam);
                                 try {
                                     initiateCameraSTMode(nCam, ipCam);
                                 } catch (IOException ex) {
                                     System.out.println("IOE: " + ex.getMessage());
                                 }
                             } else {
-                                System.out.println("This app is not a chatbot, I'm not programmed to know what you think.\nThe program will exit now!");
+                                System.out.println("Esta aplicación no es un chabot, No fuí programado para saber lo que piensas.\nEl programa finalizará ahora!");
                                 System.exit(0);
                             }
                         }
                     } else {
-                        System.out.println("Please select the camera to work with:");
+                        System.out.println("Elija la cámara: ");
                         for (Camera cam : cameras) {
                             System.out.println(cameras.indexOf(cam) + ". " + cam.toString());
                         }
@@ -104,15 +110,16 @@ public class JCamara {
                             int option = Integer.parseInt(selectedCam);
                             Camera myCam = cameras.get(option);
                             if (myCam.ip.equals("192.168.4.153")) {
-                                System.out.println("This camera is on AP mode");
+                                System.out.println("Ésta cámara está en modo AP!");
                                 initiateCameraAPMode(myCam.getName(), myCam.ip);
+                                initServer(myCam);
                             } else {
-                                System.out.println("Trying to connect with " + myCam.getName());
+                                System.out.println("Conectando con " + myCam.getName());
                                 initiateCameraSTMode(myCam.getName(), myCam.ip);
                                 initServer(myCam);
                             }
                         } catch (NumberFormatException ex) {
-                            System.out.println("NFE: " + ex.getMessage());
+                            System.out.println("NumberFormaEx: " + ex.getMessage());
                         } finally {
                             continue;
                         }
@@ -137,66 +144,70 @@ public class JCamara {
 
                     break;
                 default:
-                    System.out.println("Command not available!");
+                    System.out.println("Comando no disponible!");
             }
         }
     }
 
-    private static void initiateCameraAPMode(String name, String ip) throws IOException {
-        DatagramSocket socket = new DatagramSocket();
-        byte[] buffer = new byte[2];
+    private static boolean initiateCameraAPMode(String name, String ip) throws IOException {
+        // crear y bindear el socket global si no existe
+        if (udpSocket == null || udpSocket.isClosed()) {
+            udpSocket = new DatagramSocket(null);
+            udpSocket.setReuseAddress(true);
+            udpSocket.bind(new InetSocketAddress(0)); // bind a ephemeral port en 0.0.0.0
+            udpSocket.setSoTimeout(1000);
+        }
+
         InetAddress address = InetAddress.getByName(ip);
-        int port = 8070;
+        byte[] b1 = new byte[]{(byte) 0x30, (byte) 0x67};
+        byte[] b2 = new byte[]{(byte) 0x30, (byte) 0x66};
+        byte[] b3 = new byte[]{(byte) 0x42, (byte) 0x76};
 
-        buffer[0] = (byte) 0x30;
-        buffer[1] = (byte) 0x67;
-        socket.send(new DatagramPacket(buffer, buffer.length, address, port));
+        udpSocket.send(new DatagramPacket(b1, b1.length, address, 8070));
+        udpSocket.send(new DatagramPacket(b2, b2.length, address, 8070));
+        udpSocket.send(new DatagramPacket(b3, b3.length, address, 8080));
 
-        buffer[0] = (byte) 0x30;
-        buffer[1] = (byte) 0x66;
-        socket.send(new DatagramPacket(buffer, buffer.length, address, port));
-
-        port = 8080;
-        buffer[0] = (byte) 0x42;
-        buffer[1] = (byte) 0x76;
-        socket.send(new DatagramPacket(buffer, buffer.length, address, port));
-
-        Camera camera = new Camera(name, ip, socket);
+        // guardamos la cámara pero NO crear otro socket
+        Camera camera = new Camera(name, ip, udpSocket);
+        camera.setOnline(true);
         cameras.add(camera);
+
+        cameraInitialized = true;
+        System.out.println("Handshake enviado. UDP local port = " + udpSocket.getLocalPort());
+        return true;
     }
 
-    private static void initiateCameraSTMode(String nCam, String ip) throws IOException {
+    private static boolean initiateCameraSTMode(String nCam, String ip) throws IOException {
+        if (udpSocket == null || udpSocket.isClosed()) {
+            udpSocket = new DatagramSocket(null);
+            udpSocket.setReuseAddress(true);
+            udpSocket.bind(new InetSocketAddress(0));
+            udpSocket.setSoTimeout(1000);
+        }
 
-        DatagramSocket socket = new DatagramSocket();
-        byte[] buffer = new byte[2];
         InetAddress address = InetAddress.getByName(ip);
-        int port = 12476;
-        buffer[0] = (byte) 0x30;
-        buffer[1] = (byte) 0x67;
-        socket.send(new DatagramPacket(buffer, buffer.length, address, port));
 
-        buffer[0] = (byte) 0x30;
-        buffer[1] = (byte) 0x66;
-        socket.send(new DatagramPacket(buffer, buffer.length, address, port));
+        udpSocket.send(new DatagramPacket(new byte[]{(byte) 0x30, (byte) 0x67}, 2, address, 12476));
+        udpSocket.send(new DatagramPacket(new byte[]{(byte) 0x30, (byte) 0x66}, 2, address, 12476));
+        udpSocket.send(new DatagramPacket(new byte[]{(byte) 0x42, (byte) 0x76}, 2, address, 32108));
+        udpSocket.send(new DatagramPacket(new byte[]{(byte) 0x5D, (byte) 0x78, (byte) 0x28, (byte) 0x18}, 4, address, 32108));
 
-        port = 32108;
-        buffer[0] = (byte) 0x42;
-        buffer[1] = (byte) 0x76;
-        socket.send(new DatagramPacket(buffer, buffer.length, address, port));
-        buffer = hexToAscii("5d782818").getBytes();
-        socket.send(new DatagramPacket(buffer, buffer.length, address, port));
+        Camera camera = new Camera(nCam, ip, udpSocket);
+        camera.setOnline(true);
+        cameras.add(camera);
 
+        cameraInitialized = true;
+        System.out.println("Handshake enviado. UDP local port = " + udpSocket.getLocalPort());
+        return true;
     }
-
-    private static volatile boolean runningServer = true;
 
     private static void initServer(Camera cam) {
-        System.out.println("Camera available!");
+        System.out.println("Cámara disponible!");
 
         new Thread(() -> {
             try (ServerSocket serverSocket = new ServerSocket(8081)) {
                 serverSocket.setReuseAddress(true);
-                System.out.println("Server started at http://127.0.0.1:8081/");
+                System.out.println("Servidor iniciado en http://127.0.0.1:8081/");
 
                 while (runningServer) {
                     Socket clientSocket = serverSocket.accept();
@@ -204,7 +215,7 @@ public class JCamara {
                     new Thread(new ClientHandler(clientSocket, cam)).start();
                 }
             } catch (IOException e) {
-                System.err.println("Server error: " + e.getMessage());
+                System.err.println("Error de servidor: " + e.getMessage());
             }
         }, "HTTPServerThread").start();
     }
@@ -234,7 +245,7 @@ public class JCamara {
             String data = "f" + essid + "&&&" + essid + "###" + pass + "";
             byte[] buffer = data.getBytes();
 
-            System.out.println("Sending data and waiting for response...");
+            System.out.println("Enviando datos y esperando respuesta...");
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName("192.168.4.153"), port);
             socket.send(packet);
 
@@ -244,9 +255,9 @@ public class JCamara {
 
             String response = new String(responsePacket.getData(), 0, responsePacket.getLength());
             if (!response.isEmpty()) {
-                System.out.println("Data acquired: ");
-                System.out.println("Response: " + response);
-                System.out.println("ASCII response: " + asciiToHex(response));
+                System.out.println("Datos adquiridos: ");
+                System.out.println("Respuesta: " + response);
+                System.out.println("ASCII: " + asciiToHex(response));
                 if (response.equals("f�����")) {
                     return true;
                 }
@@ -257,91 +268,7 @@ public class JCamara {
         return false;
     }
 
-    public static String hexToAscii(String hexString) {
-        StringBuilder output = new StringBuilder();
-
-        for (int i = 0; i < hexString.length(); i += 2) {
-            String hex = hexString.substring(i, i + 2);
-            int decimal = Integer.parseInt(hex, 16);
-            output.append((char) decimal);
-        }
-
-        return output.toString();
-    }
-
-    public static String asciiToHex(String asciiString) {
-        StringBuilder output = new StringBuilder();
-
-        for (int i = 0; i < asciiString.length(); i++) {
-            char c = asciiString.charAt(i);
-            String hex = Integer.toHexString((int) c);
-            if (hex.length() < 2) {
-                hex = "0" + hex; // Agregar cero a la izquierda si es necesario
-            }
-            output.append(hex);
-        }
-
-        return output.toString().toUpperCase();
-    }
-
-    private static void sendData(String data, String hostname, int rport) {
-        try {
-            DatagramSocket sock = new DatagramSocket();
-            sock.setSoTimeout(500);
-            byte[] sdata = data.getBytes();
-            sock.send(new DatagramPacket(sdata, sdata.length, new InetSocketAddress(hostname, rport)));
-
-            byte[] buf = new byte[Byte.MAX_VALUE];
-            DatagramPacket rdp = new DatagramPacket(buf, buf.length);
-            sock.receive(rdp);
-            String response = new String(rdp.getData(), 0, rdp.getLength());
-            if (!response.isEmpty()) {
-                System.out.println("Response data: " + response);
-                System.out.println("Hex data: " + asciiToHex(response));
-            }
-        } catch (IOException ex) {
-            //System.out.println(ex.getMessage());
-        }
-    }
-
-    // validating if are correct
-    private static boolean isAnIP(String ip) {
-
-        if (ip.contains(".") && ip.split("\\.").length == 4) {
-            String[] parts = ip.split("\\.");
-            for (String part : parts) {
-                try {
-                    int value = Integer.parseInt(part);
-                    if (value < 0 || value > 255) {
-                        return false;
-                    }
-                } catch (NumberFormatException e) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private static String checkIP(String ip) {
-        return ip.replace('(', ' ').replace(')', ' ').trim();
-    }
-
-    private static String checkMac(String mac) {
-        String[] parts = mac.split(":");
-        String nMac = "";
-        for (String part : parts) {
-            if (part.length() >= 2) {
-                nMac += part + ":";
-            } else {
-                nMac += "0" + part + ":";
-            }
-        }
-        nMac = nMac.substring(0, nMac.length() - 1);
-        return nMac;
-    }
-
+    // Descubrir si hay cámaras en la red por ARP
     private static void discoverCameras() {
 
         int intervalSeconds = 10; // Intervalo de detección en segundos
@@ -392,41 +319,12 @@ public class JCamara {
 
                 Thread.sleep(intervalSeconds * 1000);
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                System.err.println(e.getMessage());
             }
         }
     }
 
-    private static boolean isImageStart(byte[] buffer, int len) {
-        for (int i = 0; i < len - 1; i++) {
-            if (buffer[i] == (byte) 0xFF && buffer[i + 1] == (byte) 0xD8) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean isImageEnd(byte[] buffer, int len) {
-        for (int i = 0; i < len - 1; i++) {
-            if (buffer[i] == (byte) 0xFF && buffer[i + 1] == (byte) 0xD9) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static void sendImage(Socket clientSocket, byte[] frame) throws IOException {
-        OutputStream out = clientSocket.getOutputStream();
-        // NOTE: en el cuerpo se envía con DOS guiones prefijados
-        out.write(("--jpgboundary\r\n").getBytes(StandardCharsets.US_ASCII));
-        out.write(("Content-Type: image/jpeg\r\n"
-                + "Content-Length: " + frame.length + "\r\n\r\n").getBytes(StandardCharsets.US_ASCII));
-        out.write(frame);
-        // DOS CRLF al final son importantes
-        out.write("\r\n\r\n".getBytes(StandardCharsets.US_ASCII));
-        out.flush();
-    }
-
+    // Clase de control
     static class ClientHandler implements Runnable {
 
         private final Socket clientSocket;
@@ -485,9 +383,9 @@ public class JCamara {
                     System.out.println("Data streaming closed");
                 }*/
             } catch (SocketException se) {
-                System.out.println("Stream ended: " + se.getMessage());
+                System.err.println("Stream ended: " + se.getMessage());
             } catch (IOException e) {
-                System.out.println("Client disconnected: " + e.getMessage());
+                System.err.println("Client disconnected: " + e.getMessage());
             } finally {
                 try {
                     clientSocket.close();
@@ -497,6 +395,7 @@ public class JCamara {
         }
     }
 
+    // Publica la página html estática
     private static void sendHtml(OutputStream out) throws IOException {
         String html = """
                 <!DOCTYPE html>
@@ -504,7 +403,7 @@ public class JCamara {
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>JCamara Stream</title>
+                    <title>JCamara A9</title>
                     <style>
                         body { background:#000; color:#0f0; text-align:center; font-family:monospace; }
                         img { width:90%%; max-width:640px; margin-top:30px; border:3px solid #0f0; border-radius:12px; }
@@ -512,7 +411,7 @@ public class JCamara {
                     </style>
                 </head>
                 <body>
-                    <h2>JCamara Live Stream</h2>
+                    <h2>JCamara A9 Live</h2>
                     <img src="/stream" alt="Camera Stream">
                 </body>
                 </html>
@@ -529,57 +428,114 @@ public class JCamara {
         out.flush();
     }
 
+    // Envía el flujo de imagen mjpg al navegador
     private static void startStream(Socket clientSocket, Camera camera) throws IOException {
         OutputStream raw = clientSocket.getOutputStream();
-        BufferedOutputStream out = new BufferedOutputStream(raw, 8192);
+        BufferedOutputStream out = new BufferedOutputStream(raw, 16384);
 
+        String boundary = "jpgboundary";
         out.write(("HTTP/1.1 200 OK\r\n"
                 + "Cache-Control: no-cache\r\n"
                 + "Pragma: no-cache\r\n"
-                + "Connection: close\r\n"
-                + "Content-Type: multipart/x-mixed-replace; boundary=jpgboundary\r\n"
+                + "Connection: keep-alive\r\n"
+                + "Content-Type: multipart/x-mixed-replace; boundary=--" + boundary + "\r\n"
                 + "\r\n").getBytes(StandardCharsets.US_ASCII));
         out.flush();
 
-        ByteArrayOutputStream frameBuilder = new ByteArrayOutputStream(262144); // 256KB
-        DatagramSocket socket = camera.getSocket();
+        // No emitimos boundary antes — emulamos Python: el primer frame incluirá headers en la parte.
+        ByteArrayOutputStream frameBuilder = new ByteArrayOutputStream(512 * 1024);
 
-        // Asegurar que el socket esté vinculado
-        if (socket == null || socket.isClosed()) {
-            socket = new DatagramSocket(38752); // puerto típico UDP (32108 AP) (38752 STA)
-            camera.socket = socket;
+        if (udpSocket == null) {
+            throw new IOException("Socket UDP no inicializado. Invoque primero a initiateCamera...");
         }
+        udpSocket.setSoTimeout(500);
 
-        System.out.println("Streaming camera: " + camera.getName() + " @ " + camera.ip);
+        System.out.println("Transmitiendo en cámara: " + camera.getName() + " @ " + camera.ip + " (puerto UDP=" + udpSocket.getLocalPort() + ")");
 
         byte[] recvBuf = new byte[8192];
         DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
-        socket.receive(packet);
-        int len = packet.getLength();
-        byte[] data = packet.getData(); // contiene al menos len bytes válidos
+        int packetCounter = 0;
+        boolean firstFrameSaved = false;
 
-        // comprobaciones sobre los bytes válidos únicamente
-        if (isImageStart(data, len)) {
-            frameBuilder.reset();
-        }
-        frameBuilder.write(data, 0, len);
-        if (isImageEnd(data, len)) {
-            byte[] frame = frameBuilder.toByteArray();
-            sendImage(clientSocket, frame);
-            frameBuilder.reset();
-        }
+        try {
+            while (!clientSocket.isClosed() && clientSocket.isConnected() && cameraInitialized) {
+                try {
+                    udpSocket.receive(packet);
+                    packetCounter++;
+                    InetAddress src = packet.getAddress();
+                    int srcPort = packet.getPort();
+                    int len = packet.getLength();
+                    if (DEBUG) {
+                        System.out.println("UDP recv #" + packetCounter + " from " + src.getHostAddress() + ":" + srcPort + " len=" + len);
+                    }
 
-    }
+                    // Solo procesar paquetes enviados desde el puerto fuente esperado (igual que python: if port == 8080)
+                    if (srcPort != CAMERA_SRC_PORT) {
+                        // puedes loggear si quieres; algunas cámaras usan otro puerto en STA/AP.
+                        continue;
+                    }
 
-    private Camera getCameraByName(String name) {
-        for (Camera camera : cameras) {
-            if (camera.getName().equals(name)) {
-                return camera;
+                    if (len <= 8) {
+                        continue; // sin payload útil
+                    }
+                    int payloadOffset = 8;
+                    int payloadLen = len - payloadOffset;
+                    byte[] buf = packet.getData();
+
+                    // Dump hex de los primeros bytes del primer paquete para comparar con Python
+                    if (!firstFrameSaved) {
+                        System.out.println("Carga inicial hex (first 64 bytes): " + hexDump(buf, payloadOffset, Math.min(payloadLen, 64)));
+                        firstFrameSaved = true;
+                    }
+
+                    boolean startHere = isImageStartInBuffer(buf, payloadOffset, payloadLen);
+                    boolean endHere = isImageEndInBuffer(buf, payloadOffset, payloadLen);
+
+                    if (startHere) {
+                        if (DEBUG) {
+                            System.out.println("  -> Inicio de JPEG en paquete.");
+                        }
+                        frameBuilder.reset();
+                    }
+
+                    frameBuilder.write(buf, payloadOffset, payloadLen);
+
+                    if (endHere) {
+                        if (DEBUG) {
+                            System.out.println("  -> Fin del paquete JPEG; Tamaño de ventana=" + frameBuilder.size());
+                        }
+                        byte[] frame = frameBuilder.toByteArray();
+
+                        // Enviar boundaries y headers exactamente como python
+                        // boundary antes de los headers de la parte: "\r\n--jpgboundary\r\n"
+                        out.write(("\r\n--" + boundary + "\r\n").getBytes(StandardCharsets.US_ASCII));
+                        out.write(("Content-Type: image/jpeg\r\n").getBytes(StandardCharsets.US_ASCII));
+                        out.write(("Content-Length: " + frame.length + "\r\n\r\n").getBytes(StandardCharsets.US_ASCII));
+                        out.write(frame);
+                        out.flush();
+                        if (DEBUG) {
+                            System.out.println("Frames enviados, bytes=" + frame.length);
+                        }
+                        frameBuilder.reset();
+                    }
+                } catch (SocketTimeoutException ste) {
+                    if (clientSocket.isClosed() || !clientSocket.isConnected()) {
+                        System.err.println("Conexión del cliente al socket cerrada, deteniendo flujo.");
+                        break;
+                    }
+                    // else continuar
+                }
             }
+        } finally {
+            try {
+                out.flush();
+            } catch (IOException ignored) {
+            }
+            System.out.println("Flujo detenido.");
         }
-        return null;
     }
 
+    // Auxiliar para detectar cámara por medio de puerto UDP abierto.
     public static void detectCameraUDP(String ip) {
         System.out.println("Escaneando puertos UDP en " + ip + "...");
         try (DatagramSocket socket = new DatagramSocket()) {
@@ -602,6 +558,7 @@ public class JCamara {
         }
     }
 
+    // Auxiliar para detectar cámara por medio de puerto UDP abierto.
     public static int detectAndDumpStream(String camIp) {
         final int START = 20000;
         final int END = 40200;
@@ -619,7 +576,7 @@ public class JCamara {
             for (int p = START; p <= END; p += 20) { // saltos para no saturar la red
                 try {
                     probeSocket.send(new DatagramPacket(probe, probe.length, addr, p));
-                } catch (Exception ignored) {
+                } catch (IOException ignored) {
                 }
             }
 
@@ -634,7 +591,7 @@ public class JCamara {
                 for (int k = 0; k < 3; k++) {
                     try {
                         probeSocket.send(new DatagramPacket(probe, probe.length, addr, port));
-                    } catch (Exception ignored) {
+                    } catch (IOException ignored) {
                     }
                 }
 
@@ -654,7 +611,7 @@ public class JCamara {
                         // no recibido en este intervalo, volver a enviar probe si preciso
                         try {
                             probeSocket.send(new DatagramPacket(probe, probe.length, addr, port));
-                        } catch (Exception ignored) {
+                        } catch (IOException ignored) {
                         }
                     }
                 }
@@ -708,7 +665,7 @@ public class JCamara {
         return foundPort;
     }
 
-// util
+    // ---- Utilidades auxiliares para los métodos ----
     private static boolean isMostlyBinary(byte[] data) {
         if (data == null || data.length == 0) {
             return false;
@@ -738,6 +695,32 @@ public class JCamara {
         return false;
     }
 
+    private static boolean isImageStartInBuffer(byte[] buffer, int offset, int len) {
+        if (buffer == null || len < 2) {
+            return false;
+        }
+        int end = offset + len - 1;
+        for (int i = offset; i < end; i++) {
+            if ((buffer[i] & 0xFF) == 0xFF && (buffer[i + 1] & 0xFF) == 0xD8) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isImageEndInBuffer(byte[] buffer, int offset, int len) {
+        if (buffer == null || len < 2) {
+            return false;
+        }
+        int end = offset + len - 1;
+        for (int i = offset; i < end; i++) {
+            if ((buffer[i] & 0xFF) == 0xFF && (buffer[i + 1] & 0xFF) == 0xD9) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static int findSequence(byte[] data, byte[] seq) {
         if (data == null || seq == null || seq.length == 0) {
             return -1;
@@ -752,11 +735,99 @@ public class JCamara {
             return i;
         }
         return -1;
+
     }
 
+    // Convertir Hex a ASCII
+    public static String hexToAscii(String hexString) {
+        StringBuilder output = new StringBuilder();
+
+        for (int i = 0; i < hexString.length(); i += 2) {
+            String hex = hexString.substring(i, i + 2);
+            int decimal = Integer.parseInt(hex, 16);
+            output.append((char) decimal);
+        }
+
+        return output.toString();
+    }
+
+    // Convertir ASCII a Hex
+    public static String asciiToHex(String asciiString) {
+        StringBuilder output = new StringBuilder();
+
+        for (int i = 0; i < asciiString.length(); i++) {
+            char c = asciiString.charAt(i);
+            String hex = Integer.toHexString((int) c);
+            if (hex.length() < 2) {
+                hex = "0" + hex; // Agregar cero a la izquierda si es necesario
+            }
+            output.append(hex);
+        }
+
+        return output.toString().toUpperCase();
+    }
+
+    // validar si el formato de IP es correcto
+    private static boolean isAnIP(String ip) {
+
+        if (ip.contains(".") && ip.split("\\.").length == 4) {
+            String[] parts = ip.split("\\.");
+            for (String part : parts) {
+                try {
+                    int value = Integer.parseInt(part);
+                    if (value < 0 || value > 255) {
+                        return false;
+                    }
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    // Sanitizar IP
+    private static String checkIP(String ip) {
+        return ip.replace('(', ' ').replace(')', ' ').trim();
+    }
+
+    // Validar formato de MAC address
+    private static String checkMac(String mac) {
+        String[] parts = mac.split(":");
+        String nMac = "";
+        for (String part : parts) {
+            if (part.length() >= 2) {
+                nMac += part + ":";
+            } else {
+                nMac += "0" + part + ":";
+            }
+        }
+        nMac = nMac.substring(0, nMac.length() - 1);
+        return nMac;
+    }
+
+    // Devuelve en Hex una cadena de bytes
+    private static String hexDump(byte[] buf, int offset, int len) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = offset; i < offset + len; i++) {
+            sb.append(String.format("%02X ", buf[i]));
+        }
+        return sb.toString().trim();
+    }
+
+    // Obtener nombre de la cámara (opcional)
+    /*private Camera getCameraByName(String name) {
+        for (Camera camera : cameras) {
+            if (camera.getName().equals(name)) {
+                return camera;
+            }
+        }
+        return null;
+    }*/
     static class Camera {
 
-        private String name;
+        private final String name;
         private String ip;
         DatagramSocket socket;
         private byte[] frame;
